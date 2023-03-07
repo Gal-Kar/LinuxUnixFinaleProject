@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
-my $source_file = $ARGV[0];
-my $destination_file = $ARGV[1];
+my $source_file = "$ARGV[0]";
+my $destination_file = "$ARGV[1]";
 
 unless (open SOURCE, "<", $source_file) { # open source file for reading
     die "Cannot open source file: $!";
