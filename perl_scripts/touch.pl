@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-my $filename = "$ARGV[0]";
+my $filename = $ARGV[0];
 
 if (-e $filename) { # check if file exists
     # update the timestamp of an existing file

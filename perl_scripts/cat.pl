@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-my $filename = "$ARGV[0]";
+my $filename = $ARGV[0];
 
 unless (open FILE, "<", $filename) { # check if file can be opened
     die "Cannot open file: $!";

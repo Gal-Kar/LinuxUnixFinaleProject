@@ -2,7 +2,14 @@
 
 my $path, @dirs;
 
-$path = "\.";
+if (@ARGV)
+{
+    $path = ARGV[0]
+}
+else
+{
+   $path = "\."; 
+}
 
 opendir(DIR,"$path");
 
