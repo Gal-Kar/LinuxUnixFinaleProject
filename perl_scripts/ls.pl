@@ -4,7 +4,7 @@ my $path, @dirs;
 
 if (@ARGV)
 {
-    $path = ARGV[0]
+    $path = ARGV[0];
 }
 else
 {
