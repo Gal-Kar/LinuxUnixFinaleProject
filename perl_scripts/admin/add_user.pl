@@ -16,8 +16,19 @@ return;
 }
 
 my $uid = 1001;
-while (getpwnam($name)) {
-    $uid++;
+# Open /etc/passwd file for reading
+open(my $passwd_file, "<", "/etc/passwd")
+    or die "Couldn't open /etc/passwd file: $!";
+
+# Read each line of the file and find the next free UID
+while(my $line = <$passwd_file>) {
+    my $existing_uid = (split /:/, $line)[2];
+    if($existing_uid == $uid) {
+        $uid++;
+    } else {
+        close($passwd_file);
+        last;
+    }
 }
 
 my $salt = '$1$'.substr(rand().rand().rand(),2,8);
