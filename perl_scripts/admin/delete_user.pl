@@ -88,3 +88,5 @@ if ($group_name){
         close(GROUP);
     }
 }
+
+print "User deleted successfully";

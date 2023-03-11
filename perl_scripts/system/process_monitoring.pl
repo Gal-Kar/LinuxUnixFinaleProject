@@ -1,12 +1,21 @@
 #!/usr/bin/perl
 
-use Proc::ProcessTable;
+opendir(DIR, "/proc") or die "Cannot open /proc: $!";
+my @pids = grep /^\d+$/, readdir(DIR);
+closedir(DIR);
 
-# Create a new process table object
-my $process_table = Proc::ProcessTable->new();
+foreach my $pid (@pids) {
+  open(FILE, "/proc/$pid/stat") or next;
+  my $line = <FILE>;
+  close(FILE);
 
-# Loop through all the processes and print their details
-foreach my $process (@{$process_table->table}) {
-    printf "PID: %d, Name: %s, User: %s, Memory: %d KB\n",
-        $process->pid, $process->cmndline, $process->user, $process->size;
+  my @fields = split(/\s+/, $line);
+  my $cmdline = "";
+  if (-e "/proc/$pid/cmdline") {
+    open(FILE, "/proc/$pid/cmdline") or next;
+    $cmdline = <FILE>;
+    close(FILE);
+    $cmdline =~ s/\0/ /g;
+  }
+  print "$fields[0] $fields[1] $fields[2] $fields[3] $fields[4] $fields[5] $fields[6] $fields[7] $fields[8] $fields[9] $fields[10] $cmdline\n";
 }

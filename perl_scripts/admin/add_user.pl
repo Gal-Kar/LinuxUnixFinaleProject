@@ -101,3 +101,4 @@ if (!open(PASSWD, ">", "/etc/passwd")) {
 print PASSWD @passwd_entries;
 close(PASSWD);
 
+print "User added successfully";
