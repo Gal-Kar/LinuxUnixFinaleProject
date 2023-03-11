@@ -38,12 +38,36 @@ if (!open(SHADOW, ">", "/etc/shadow")) {
 print SHADOW @shadow_entries;
 close(SHADOW);
 
-# Delete the user's home directory and mail spool
-if (-d $home) {
-    if (!system("rm -rf $home")) {
-        die "Error: Failed to delete home directory '$home': $!\n";
+
+# Function to remove a user directory from the home directory
+sub remove_user_directory {
+    my $user = shift;
+    my $home_directory = "/home/$user";
+    my $user_directory = "$home_directory/$user";
+
+    # Check if the user directory exists
+    if(-d $user_directory) {
+        # Remove the user directory and all of its contents
+        opendir(my $dh, $user_directory) or die "Cannot open directory $user_directory: $!";
+        my @contents = readdir($dh);
+        closedir($dh);
+        foreach my $content (@contents) {
+            next if($content eq '.' or $content eq '..');
+            my $path = "$user_directory/$content";
+            if(-d $path) {
+                remove_user_directory($path);
+            } else {
+                unlink($path) or die "Cannot remove file $path: $!";
+            }
+        }
+        rmdir($user_directory) or die "Cannot remove directory $user_directory: $!";
+    } else {
+        print "User directory $user_directory does not exist.\n";
     }
 }
+
+remove_user_directory($name);
+
 
 # Delete the user's group entry in /etc/group if it has no other members
 my $group_name = getgrgid($gid);
