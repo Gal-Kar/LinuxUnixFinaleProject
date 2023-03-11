@@ -21,14 +21,14 @@ open(my $passwd_file, "<", "/etc/passwd")
     or die "Couldn't open /etc/passwd file: $!";
 
 # Read each line of the file and find the next free UID
+my %hash_map;
 while(my $line = <$passwd_file>) {
-    my $existing_uid = (split /:/, $line)[2];
-    if($existing_uid == $uid) {
-        $uid++;
-    } else {
-        close($passwd_file);
-        last;
-    }
+    my $cur_id = (split /:/,$line)[2];
+    $hash_map{$cur_id} = 1;
+}
+
+while(exists $hash_map{$uid}){
+    $uid++;
 }
 
 my $salt = '$1$'.substr(rand().rand().rand(),2,8);
