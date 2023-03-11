@@ -1,2 +1,2 @@
 # LinuxUnixFinaleProject
-sudo cpan Crypt:passwdmd5
+sudo cpan Crypt:passwdMD5
