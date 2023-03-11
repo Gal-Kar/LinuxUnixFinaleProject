@@ -42,7 +42,7 @@ close(SHADOW);
 # Function to remove a user directory from the home directory
 sub remove_user_directory {
     my $user = shift;
-    my $home_directory = "/home/$user";
+    my $home_directory = "/home";
     my $user_directory = "$home_directory/$user";
 
     # Check if the user directory exists
@@ -71,18 +71,20 @@ remove_user_directory($name);
 
 # Delete the user's group entry in /etc/group if it has no other members
 my $group_name = getgrgid($gid);
-my $group_entry = (getgrnam($group_name))[3];
-my @group_members = split(/,/, $group_entry);
-if (@group_members == 1 && $group_members[0] eq $name) {
-    if (!open(GROUP, "<", "/etc/group")) {
-        die "Error: Failed to open /etc/group: $!\n";
+if ($group_name){
+    my $group_entry = (getgrnam($group_name))[3];
+    my @group_members = split(/,/, $group_entry);
+    if (@group_members == 1 && $group_members[0] eq $name) {
+        if (!open(GROUP, "<", "/etc/group")) {
+            die "Error: Failed to open /etc/group: $!\n";
+        }
+        my @group_entries = <GROUP>;
+        close(GROUP);
+        @group_entries = grep { !/^$group_name:/ } @group_entries;
+        if (!open(GROUP, ">", "/etc/group")) {
+            die "Error: Failed to open /etc/group: $!\n";
+        }
+        print GROUP @group_entries;
+        close(GROUP);
     }
-    my @group_entries = <GROUP>;
-    close(GROUP);
-    @group_entries = grep { !/^$group_name:/ } @group_entries;
-    if (!open(GROUP, ">", "/etc/group")) {
-        die "Error: Failed to open /etc/group: $!\n";
-    }
-    print GROUP @group_entries;
-    close(GROUP);
 }
