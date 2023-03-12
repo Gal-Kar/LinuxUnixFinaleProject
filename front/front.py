@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 import os
+from pathlib import Path
 
 class Application(tk.Frame):
     def __init__(self, master=None):
@@ -30,7 +31,7 @@ class Application(tk.Frame):
         # Output label and text box
         self.output_label = tk.Label(self.main_frame, text="Output:", font=("Arial", 16))
         self.output_label.pack(side="top", pady=20)
-        self.output_text = tk.Text(self.main_frame, height=30, width=70, font=("Arial", 12), wrap="word", bg="#333",borderwidth= 10)
+        self.output_text = tk.Text(self.main_frame, height=30, width=70, font=("Arial", 12),foreground = "white" ,wrap="word", bg="#222",borderwidth= 10)
         self.output_text.pack(side="top", padx=20, pady=5)
 
     def create_menu_lable(self):
@@ -42,7 +43,7 @@ class Application(tk.Frame):
         self.create_menu_lable()
         # Menu options
         button_style = ttk.Style()
-        button_style.configure('my.TButton', font=('Helvetica', 16,'bold'),foreground ='black',background='black')
+        button_style.configure('my.TButton', font=('Helvetica', 16,'bold'),foreground ='black',background='gray')
         self.menu_options = ttk.Treeview(self.menu_frame)
         self.admin_button = ttk.Button(self.menu_frame, text = "Admin", style = 'my.TButton', command=self.admin_button)
         self.admin_button.pack(side="top", pady=20)
@@ -62,7 +63,7 @@ class Application(tk.Frame):
         self.clear_menu_frame()
         if self.first_enter[0] == 0:
             button_style = ttk.Style()
-            button_style.configure('my.TButton', font=('Helvetica', 16,'bold'),foreground ='black',background='black')
+            button_style.configure('my.TButton', font=('Helvetica', 16,'bold'),foreground ='black',background='gray')
 
             self.add_user_button = ttk.Button(self.menu_frame, text="Add User", style='my.TButton', command=self.add_user)
             self.add_user_button.pack(side="top", pady=20)
@@ -89,7 +90,7 @@ class Application(tk.Frame):
         self.clear_menu_frame()
         if self.first_enter[1] == 0:
             button_style = ttk.Style()
-            button_style.configure('my.TButton', font=('Helvetica', 16,'bold'),foreground ='black',background='black')
+            button_style.configure('my.TButton', font=('Helvetica', 16,'bold'),foreground ='black',background='gray')
 
             self.process_monitor = ttk.Button(self.menu_frame, text="Process monitor", style='my.TButton', command=self.process_monitor)
             self.process_monitor.pack(side="top", pady=20)
@@ -116,7 +117,7 @@ class Application(tk.Frame):
         self.clear_menu_frame()
         if self.first_enter[2] == 0:
             button_style = ttk.Style()
-            button_style.configure('my.TButton', font=('Helvetica', 16, 'bold'), foreground='black', background='black')
+            button_style.configure('my.TButton', font=('Helvetica', 16, 'bold'), foreground='black', background='gray')
 
             self.touch = ttk.Button(self.menu_frame, text="touch", style='my.TButton',command=self.touch)
             self.touch.pack(side="top", pady=10)
@@ -177,7 +178,7 @@ class Application(tk.Frame):
         print("A")
 
     def process_monitor(self):
-        self.perl_scripy("../perl_script/system/process_monitoring.pl")
+        self.run_command("/system/process_monitoring.pl")
 
     def process_kill(self):
         print("A")
@@ -207,8 +208,9 @@ class Application(tk.Frame):
         print("A")
 
 
-    def run_command(self,perl_scripy):
-        perl_output = os.popen(perl_scripy).read()
+    def run_command(self,perl_script):
+        path = str(Path.cwd()) + "/../perl_scripts" + str(perl_script)
+        perl_output = os.popen(path).read()
         self.output_text.delete(1.0, tk.END)
         self.output_text.insert(tk.END, perl_output)
 

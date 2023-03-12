@@ -17,5 +17,5 @@ foreach my $pid (@pids) {
     close(FILE);
     $cmdline =~ s/\0/ /g;
   }
-  print "$fields[0] $fields[1] $fields[2] $fields[3] $fields[4] $fields[5] $fields[6] $fields[7] $fields[8] $fields[9] $fields[10] $cmdline\n";
+  print "$fields[0] $fields[1] $fields[2] $fields[3] $fields[4] $fields[5] $fields[6] $fields[7] $fields[8] $fields[9] $fields[10] $cmdline\n\n";
 }
