@@ -59,6 +59,58 @@ class Application(tk.Frame):
             widget.forget()
         self.create_menu_lable()
 
+    def submit_two_inputs(self,file):
+        input1 = self.input1_text_field.get()
+        input2 = self.input2_text_field.get()
+        command = file + " " + input1 + " " + input2
+        self.run_command(command)
+
+    def pop_window_for_two_inputs(self,window_name,input1,input2,file):
+        # Create a new window
+        window = tk.Toplevel(root)
+        window.title(window_name)
+        window.resizable(False, False)
+        window.configure(background="#222222")
+
+        label1 = tk.Label(window, text=input1, fg="white", bg="#222222")
+        label1.grid(row=0, column=0, padx=10, pady=5)
+
+        # Create a text field
+        self.input1_text_field = tk.Entry(window, bg="#444444", fg="white")
+        self.input1_text_field.grid(row=1, column=0, padx=10, pady=5)
+
+        label2 = tk.Label(window, text=input2, fg="white", bg="#222222")
+        label2.grid(row=0, column=1, padx=10, pady=5)
+
+        self.input2_text_field = tk.Entry(window, bg="#444444", fg="white")
+        self.input2_text_field.grid(row=1, column=1, padx=10, pady=5)
+        # Create a button
+        button = tk.Button(window, text="Submit", command=lambda: (self.submit_two_inputs(file),window.destroy()), bg="#555555", fg="white")
+        button.grid(row=2, column=0, columnspan=2, padx=10, pady=10)
+
+    def submit_one_inputs(self,file):
+        input1 = self.input1_text_field.get()
+        command = file + " " + input1
+        self.run_command(command)
+
+    def pop_window_for_one_input(self,window_name,input1,file):
+        # Create a new window
+        window = tk.Toplevel(root)
+        window.title(window_name)
+        window.resizable(False, False)
+        window.configure(background="#222222")
+
+        label1 = tk.Label(window, text=input1, fg="white", bg="#222222")
+        label1.grid(row=0, column=0, padx=10, pady=5)
+
+        # Create a text field
+        self.input1_text_field = tk.Entry(window, bg="#444444", fg="white")
+        self.input1_text_field.grid(row=1, column=0, padx=10, pady=5)
+
+        # Create a button
+        button = tk.Button(window, text="Submit", command=lambda: (self.submit_one_inputs(file),window.destroy()), bg="#555555", fg="white")
+        button.grid(row=2, column=0, columnspan=2, padx=10, pady=10)
+
     def admin_button(self):
         self.clear_menu_frame()
         if self.first_enter[0] == 0:
@@ -137,12 +189,6 @@ class Application(tk.Frame):
             self.mkdir = ttk.Button(self.menu_frame, text="mkdir", style='my.TButton',command=self.mkdir)
             self.mkdir.pack(side="top", pady=10)
 
-
-            self.pwd = ttk.Button(self.menu_frame, text="pwd", style='my.TButton',command=self.pwd)
-            self.pwd.pack(side="top", pady=10)
-
-
-
             if 1 in self.first_enter:
                 self.return_button.pack(side="top", pady=10)
             else:
@@ -156,7 +202,6 @@ class Application(tk.Frame):
             self.cp.pack(side="top", pady=10)
             self.ls.pack(side="top", pady=10)
             self.mkdir.pack(side="top", pady=10)
-            self.pwd.pack(side="top", pady=10)
             self.return_button.pack(side="top", pady=10)
 
     def return_button(self):
@@ -169,43 +214,40 @@ class Application(tk.Frame):
         self.shell_button.pack(side="top", pady=20)
 
     def add_user(self):
-        print("A")
+        self.pop_window_for_two_inputs("Add User","Username","Password","/admin/add_user.pl")
 
     def remove_user(self):
-        print("A")
+        self.pop_window_for_one_input("Remove User","Username","/admin/delete_user.pl")
 
     def change_permissions(self):
-        print("A")
+        self.pop_window_for_two_inputs("Change Permissions","Username","Permissions","/system/change_permissions.pl")
 
     def process_monitor(self):
         self.run_command("/system/process_monitoring.pl")
 
     def process_kill(self):
-        print("A")
+        self.pop_window_for_one_input("Process Kill","Process ID","/system/delete_user.pl")
 
     def backup(self):
-        print("A")
+        self.pop_window_for_two_inputs("Backup","Backup from","Backup to","/system/backup.pl")
 
     def cat(self):
-        print("A")
+        self.pop_window_for_one_input("cat","File Path","/shell/cat.pl")
 
     def chmod(self):
-        print("A")
+        self.pop_window_for_two_inputs("chmod","Mode [OCTA]","File","/shell/chmod.pl")
 
     def cp(self):
-        print("A")
+        self.pop_window_for_two_inputs("copy","From","To","/shell/cp.pl")
 
     def ls(self):
-        print("A")
+        self.pop_window_for_one_input("ls","Directory Path","/shell/ls.pl")
 
     def mkdir(self):
-        print("A")
-
-    def pwd(self):
-        print("A")
+        self.pop_window_for_one_input("mkdir","Directory Path","/shell/mkdir.pl")
 
     def touch(self):
-        print("A")
+        self.pop_window_for_one_input("touch","File Path","/shell/touch.pl")
 
 
     def run_command(self,perl_script):
