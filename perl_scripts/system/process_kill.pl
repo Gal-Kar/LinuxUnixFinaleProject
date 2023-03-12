@@ -1,6 +1,5 @@
 #!/usr/bin/perl
 
-print "Enter the process ID to kill: ";
 my $pid = $ARGV[0];
 chomp $pid;
 
