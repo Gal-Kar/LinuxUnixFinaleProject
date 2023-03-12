@@ -7,7 +7,7 @@ my $path = $ARGV[0];
 # get the directory where the backup file should be saved
 my $backup_directory = $ARGV[1];
 if (!defined($backup_directory)){
-backup_directory = '.';
+$backup_directory = '.';
 }
 
 if (!defined($path)){
