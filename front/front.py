@@ -251,7 +251,7 @@ class Application(tk.Frame):
 
 
     def run_command(self,perl_script):
-        path = str(Path.cwd()) + "/../perl_scripts" + str(perl_script)
+        path = "sudo " + str(Path.cwd()) + "/../perl_scripts" + str(perl_script)
         perl_output = os.popen(path).read()
         self.output_text.delete(1.0, tk.END)
         self.output_text.insert(tk.END, perl_output)
