@@ -17,8 +17,10 @@ return;
 
 my $uid = 1001;
 # Open /etc/passwd file for reading
-open(my $passwd_file, "<", "/etc/passwd")
-    or die "Couldn't open /etc/passwd file: $!";
+open(my $passwd_file, "<", "/etc/passwd") or do{
+    print "Couldn't open /etc/passwd file: $!";
+    return;
+};
 
 # Read each line of the file and find the next free UID
 my %hash_map;
@@ -44,7 +46,8 @@ my $shell = "/bin/bash";
 
 # Check if the user already exists
 if (getpwnam($name)) {
-    die "Error: User '$name' already exists\n";
+    print "Error: User '$name' already exists\n";
+    return;
 }
 
 # Create the user
@@ -57,14 +60,16 @@ my $encrypted_password = unix_md5_crypt($password, $salt); # encrypt the passwor
 
 # Create the user entry in /etc/passwd
 if (!open(PASSWD, ">>", "/etc/passwd")) {
-    die "Error: Failed to open /etc/passwd: $!\n";
+    print "Error: Failed to open /etc/passwd: $!\n";
+    return;
 }
 print PASSWD "$user_info\n";
 close(PASSWD);
 
 # Create the user entry in /etc/shadow
 if (!open(SHADOW, ">>", "/etc/shadow")) {
-    die "Error: Failed to open /etc/shadow: $!\n";
+    print "Error: Failed to open /etc/shadow: $!\n";
+    return;
 }
 print SHADOW "$name:$encrypted_password:18748::::::\n"; # empty fields are filled with colons
 close(SHADOW);
@@ -73,21 +78,25 @@ close(SHADOW);
 if (!mkdir($home, 0755)) {
     my $error = $!;
     if ($error == EEXIST) {
-        die "Error: Failed to create home directory '$home': Directory already exists\n";
+        print "Error: Failed to create home directory '$home': Directory already exists\n";
+        return;
     }
     else {
-        die "Error: Failed to create home directory '$home': $!\n";
+        print "Error: Failed to create home directory '$home': $!\n";
+        return;
     }
 }
 
 # Set the ownership of the home directory to the new user
 if (!chown($uid, $gid, $home)) {
-    die "Error: Failed to set ownership of home directory '$home': $!\n";
+    print "Error: Failed to set ownership of home directory '$home': $!\n";
+    return;
 }
 
 # Set the default shell for the user
 if (!open(PASSWD, "<", "/etc/passwd")) {
-    die "Error: Failed to open /etc/passwd: $!\n";
+    print "Error: Failed to open /etc/passwd: $!\n";
+    return;
 }
 my @passwd_entries = <PASSWD>;
 close(PASSWD);
@@ -96,7 +105,8 @@ my @fields = split(/:/, $passwd_entry);
 $fields[6] = $shell;
 my $new_passwd_entry = join(":", @fields);
 if (!open(PASSWD, ">", "/etc/passwd")) {
-    die "Error: Failed to open /etc/passwd: $!\n";
+    print "Error: Failed to open /etc/passwd: $!\n";
+    return;
 }
 print PASSWD @passwd_entries;
 close(PASSWD);

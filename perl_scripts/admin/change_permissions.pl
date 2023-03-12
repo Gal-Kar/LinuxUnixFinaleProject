@@ -18,7 +18,10 @@ sub set_user_permissions {
         chomp($permissions);
 
         # Set the new permissions on the home directory
-        chmod(oct($permissions), $home_directory) or die "Cannot set permissions on $home_directory: $!";
+        chmod(oct($permissions), $home_directory) or do{
+             print "Cannot set permissions on $home_directory: $!";
+             return;
+             };
         print "Permissions set successfully.\n";
     } else {
         print "Home directory for user $user does not exist.\n";

@@ -3,7 +3,8 @@
 my $filename = $ARGV[0];
 
 unless (open FILE, "<", $filename) { # check if file can be opened
-    die "Cannot open file: $!";
+    print "Cannot open file: $!";
+    return;
 }
 
 while (<FILE>) {

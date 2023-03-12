@@ -9,31 +9,36 @@ my $name = $ARGV[0];
 # Check if the user exists
 my ($uid, $gid, $home, $shell) = (getpwnam($name))[2, 3, 7, 8];
 if (!$uid) {
-    die "Error: User '$name' does not exist\n";
+    print "Error: User '$name' does not exist\n";
+    return
 }
 
 # Delete the user entry in /etc/passwd
 if (!open(PASSWD, "<", "/etc/passwd")) {
-    die "Error: Failed to open /etc/passwd: $!\n";
+    print "Error: Failed to open /etc/passwd: $!\n";
+    return;
 }
 my @passwd_entries = <PASSWD>;
 close(PASSWD);
 @passwd_entries = grep { !/^$name:/ } @passwd_entries;
 if (!open(PASSWD, ">", "/etc/passwd")) {
-    die "Error: Failed to open /etc/passwd: $!\n";
+    print "Error: Failed to open /etc/passwd: $!\n";
+    return;
 }
 print PASSWD @passwd_entries;
 close(PASSWD);
 
 # Delete the user entry in /etc/shadow
 if (!open(SHADOW, "<", "/etc/shadow")) {
-    die "Error: Failed to open /etc/shadow: $!\n";
+    print "Error: Failed to open /etc/shadow: $!\n";
+    return;
 }
 my @shadow_entries = <SHADOW>;
 close(SHADOW);
 @shadow_entries = grep { !/^$name:/ } @shadow_entries;
 if (!open(SHADOW, ">", "/etc/shadow")) {
-    die "Error: Failed to open /etc/shadow: $!\n";
+    print "Error: Failed to open /etc/shadow: $!\n";
+    return;
 }
 print SHADOW @shadow_entries;
 close(SHADOW);
@@ -48,7 +53,10 @@ sub remove_user_directory {
     # Check if the user directory exists
     if(-d $user_directory) {
         # Remove the user directory and all of its contents
-        opendir(my $dh, $user_directory) or die "Cannot open directory $user_directory: $!";
+        opendir(my $dh, $user_directory) or do{
+            print "Cannot open directory $user_directory: $!";
+            return;
+        };
         my @contents = readdir($dh);
         closedir($dh);
         foreach my $content (@contents) {
@@ -57,10 +65,16 @@ sub remove_user_directory {
             if(-d $path) {
                 remove_user_directory($path);
             } else {
-                unlink($path) or die "Cannot remove file $path: $!";
+                unlink($path) or do{ 
+                    print"Cannot remove file $path: $!";
+                    return;
+                };
             }
         }
-        rmdir($user_directory) or die "Cannot remove directory $user_directory: $!";
+        rmdir($user_directory) or do{
+            print "Cannot remove directory $user_directory: $!";
+            return;
+        };
     } else {
         print "User directory $user_directory does not exist.\n";
     }
@@ -76,13 +90,15 @@ if ($group_name){
     my @group_members = split(/,/, $group_entry);
     if (@group_members == 1 && $group_members[0] eq $name) {
         if (!open(GROUP, "<", "/etc/group")) {
-            die "Error: Failed to open /etc/group: $!\n";
+            print "Error: Failed to open /etc/group: $!\n";
+            return;
         }
         my @group_entries = <GROUP>;
         close(GROUP);
         @group_entries = grep { !/^$group_name:/ } @group_entries;
         if (!open(GROUP, ">", "/etc/group")) {
-            die "Error: Failed to open /etc/group: $!\n";
+            print "Error: Failed to open /etc/group: $!\n";
+            return;
         }
         print GROUP @group_entries;
         close(GROUP);
