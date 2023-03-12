@@ -226,7 +226,7 @@ class Application(tk.Frame):
         self.run_command("/system/process_monitoring.pl")
 
     def process_kill(self):
-        self.pop_window_for_one_input("Process Kill","Process ID","/system/delete_user.pl")
+        self.pop_window_for_one_input("Process Kill","Process ID","/system/process_kill.pl")
 
     def backup(self):
         self.pop_window_for_two_inputs("Backup","Backup from","Backup to","/system/backup.pl")
@@ -251,7 +251,7 @@ class Application(tk.Frame):
 
 
     def run_command(self,perl_script):
-        path = "sudo " + str(Path.cwd()) + "/../perl_scripts" + str(perl_script)
+        path = "sudo " + str(Path.cwd()) + "/perl_scripts" + str(perl_script)
         perl_output = os.popen(path).read()
         self.output_text.delete(1.0, tk.END)
         self.output_text.insert(tk.END, perl_output)

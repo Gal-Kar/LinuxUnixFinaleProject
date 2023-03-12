@@ -4,14 +4,17 @@ my $path, @dirs;
 
 if (@ARGV)
 {
-    $path = ARGV[0];
+    $path = $ARGV[0];
 }
 else
 {
    $path = "\."; 
 }
 
-opendir(DIR,"$path");
+opendir(DIR,"$path") or do{
+    print "No such direcroty";
+    return;
+};
 
 @dirs = readdir(DIR);
 

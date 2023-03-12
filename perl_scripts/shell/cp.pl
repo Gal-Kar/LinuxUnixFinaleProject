@@ -20,3 +20,5 @@ while (my $buffer = <SOURCE>) {
 
 close SOURCE;
 close DESTINATION;
+
+print "Copyied successfully.\n";"

@@ -17,3 +17,4 @@ if (-e $filename) { # check if file exists
     }
     close FILE;
 }
+print "File $ARGV[0] has created "
