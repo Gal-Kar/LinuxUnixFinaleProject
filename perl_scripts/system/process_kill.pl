@@ -1,17 +1,16 @@
 #!/usr/bin/perl
 
+print "Enter the process ID to kill: ";
+my $pid = <STDIN>;
+chomp $pid;
 
-use Proc::Killfam;
-
-my $pid_to_kill = $ARGV[0];
-my $signal = 'TERM';
-
-# Kill the process with the specified PID and all its descendants
-killfam $signal, $pid_to_kill;
-
-# Check if the process was successfully killed
-if (kill 0, $pid_to_kill) {
-    print "Process $pid_to_kill still running\n";
+if ($pid =~ /^\d+$/) {
+    # PID is a number
+    if (kill('TERM', $pid)) {
+        print "Process $pid killed\n";
+    } else {
+        print "Failed to kill process $pid: $!\n";
+    }
 } else {
-    print "Process $pid_to_kill terminated\n";
+    print "Invalid process ID\n";
 }
