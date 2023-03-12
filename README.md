@@ -1,4 +1,5 @@
-# LinuxUnixFinaleProject
+# LinuxUnixFinaleProject by Gal Karasnty
+requairements:
 sudo cpan Crypt:passwdMD5
 sudo apt-get install python3-tk
 sudo chmod +x perl_scripts/shell/*
