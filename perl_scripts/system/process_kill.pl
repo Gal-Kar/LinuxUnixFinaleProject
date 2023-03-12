@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 print "Enter the process ID to kill: ";
-my $pid = <STDIN>;
+my $pid = $ARGV[0];
 chomp $pid;
 
 if ($pid =~ /^\d+$/) {
