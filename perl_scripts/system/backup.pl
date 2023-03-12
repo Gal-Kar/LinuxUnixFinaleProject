@@ -12,12 +12,15 @@ if (!-e $path){
 die "No such path\n";
 }
 
+# get the base name of the path
+my $basename = (split('/', $path))[-1];
+
 # create a timestamp for the backup filename
 my $timestamp = localtime();
 $timestamp =~ s/[^0-9a-zA-Z]/_/g;
 
 # set the backup filename
-my $backup_filename = "$path_backup_$timestamp.tar";
+my $backup_filename = "${basename}_backup_$timestamp.tar";
 
 # create a new Archive::Tar object
 my $tar = Archive::Tar->new();
