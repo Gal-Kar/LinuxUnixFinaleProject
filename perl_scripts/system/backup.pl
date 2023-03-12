@@ -4,6 +4,11 @@ use Archive::Tar;
 
 # get the path to backup
 my $path = $ARGV[0];
+# get the directory where the backup file should be saved
+my $backup_directory = $ARGV[1];
+if (!defined($backup_directory)){
+backup_directory = '.';
+}
 
 if (!defined($path)){
 die "Please provide a path to backup\n";
@@ -29,6 +34,6 @@ my $tar = Archive::Tar->new();
 $tar->add_files($path);
 
 # write the tar archive to a file
-$tar->write($backup_filename);
+$tar->write("$backup_directory/$backup_filename");
 
 print "Backup created successfully: $backup_filename\n";
