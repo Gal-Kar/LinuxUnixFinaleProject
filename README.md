@@ -6,3 +6,4 @@ sudo chmod +x perl_scripts/shell/*
 sudo chmod +x perl_scripts/admin/*
 sudo chmod +x perl_scripts/system/*
 sudo chmod +x front/*
+#!/usr/bin/perl
