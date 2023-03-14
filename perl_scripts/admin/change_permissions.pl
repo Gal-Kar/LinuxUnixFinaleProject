@@ -1,32 +1,20 @@
-#!/usr/bin/perl
+use User::pwent;
 
-# Function to set permissions for a user's home directory
-sub set_user_permissions {
-    # Prompt the user for a username
-    print "Enter the username: ";
-    my $user = <STDIN>;
-    chomp($user);
+my $username = "exampleusername";
+my $groupname = "examplegroup";
 
-    # Construct the path to the user's home directory
-    my $home_directory = "/home/$user";
+my $user = getpwnam($username);
 
-    # Check if the home directory exists
-    if(-d $home_directory) {
-        # Prompt the user for the new permissions
-        print "Enter the new permissions (in octal format): ";
-        my $permissions = <STDIN>;
-        chomp($permissions);
+# Extract the existing group IDs for the user
+my @group_ids = split(',', $user->groups);
 
-        # Set the new permissions on the home directory
-        chmod(oct($permissions), $home_directory) or do{
-             print "Cannot set permissions on $home_directory: $!";
-             return;
-             };
-        print "Permissions set successfully.\n";
-    } else {
-        print "Home directory for user $user does not exist.\n";
-    }
+# Check if the user is already a member of the group
+my $already_member = grep { $_ eq $groupname } @group_ids;
+
+# If the user is not already a member of the group, add the group ID to the list
+if (!$already_member) {
+    push(@group_ids, $groupname);
+    my $new_groups = join(',', @group_ids);
+    $user->groups($new_groups);
+    $user->passwd;  # required to save the changes
 }
-
-# Test the function
-set_user_permissions();
