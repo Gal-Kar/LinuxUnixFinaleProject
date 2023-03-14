@@ -84,25 +84,43 @@ remove_user_directory($name);
 
 
 # Delete the user's group entry in /etc/group if it has no other members
-my $group_name = getgrgid($gid);
-if ($group_name){
-    my $group_entry = (getgrnam($group_name))[3];
-    my @group_members = split(/,/, $group_entry);
-    if (@group_members == 1 && $group_members[0] eq $name) {
-        if (!open(GROUP, "<", "/etc/group")) {
-            print "Error: Failed to open /etc/group: $!\n";
-            return;
-        }
-        my @group_entries = <GROUP>;
-        close(GROUP);
-        @group_entries = grep { !/^$group_name:/ } @group_entries;
-        if (!open(GROUP, ">", "/etc/group")) {
-            print "Error: Failed to open /etc/group: $!\n";
-            return;
-        }
-        print GROUP @group_entries;
-        close(GROUP);
-    }
+
+my $group_file = "/etc/group"; # Path to group file
+my $group_to_remove_from = "groupname"; # Replace with the name of the group to remove the user from
+
+# Open the group file for reading and writing
+open my $group_fh, "<", $group_file or do{ 
+    print "Unable to open group file: $!";
+    return;
+    };
+my @group_lines = <$group_fh>; # Read in all lines of the group file
+close $group_fh;
+
+# Loop through each line of the group file
+foreach my $line (@group_lines) {
+    chomp($line); # Remove newline character from end of line
+    my @fields = split(/:/, $line); # Split line into fields separated by colons
+
+    my $groupname = $fields[0];
+    my $group_members = $fields[3];
+
+    # Split the list of members into an array
+    my @members = split(/,/, $group_members);
+
+    # Remove the user we want to remove from the array
+    @members = grep { $_ ne $name } @members;
+
+    # Join the remaining members back into a comma-separated list
+    my $new_members = join(",", @members);
+
+    # Replace the old list of members with the new one in the current line
+    $fields[3] = $new_members;
+    $line = join(":", @fields);
 }
+
+# Open the group file for writing and write out the modified lines
+open $group_fh, ">", $group_file or die "Unable to open group file: $!";
+print $group_fh join("\n", @group_lines);
+close $group_fh;
 
 print "User deleted successfully";
