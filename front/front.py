@@ -220,7 +220,7 @@ class Application(tk.Frame):
         self.pop_window_for_one_input("Remove User","Username","/admin/delete_user.pl")
 
     def change_permissions(self):
-        self.pop_window_for_two_inputs("Change Permissions","Username","Permissions","/system/change_permissions.pl")
+        self.pop_window_for_two_inputs("Change Permissions","Username","Permissions","/admin/change_permissions.pl")
 
     def process_monitor(self):
         self.run_command("/system/process_monitoring.pl")

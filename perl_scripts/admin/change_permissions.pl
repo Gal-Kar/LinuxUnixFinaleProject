@@ -1,11 +1,22 @@
+#!/usr/bin/perl
+
 use strict;
 use warnings;
 
-my $username = "exampleusername";
-my $groupname = "examplegroup";
+my $username = $ARGV[0];
+my $groupname = $ARGV[1];
+
+if (!defined($username) || !defined($groupname)) {
+    print "Erorr: missing arguments\n";
+    return;
+}
+
 
 # Open the /etc/group file for reading and writing
-open my $group_file, "+<", "/etc/group" or die "Cannot open /etc/group: $!";
+open my $group_file, "+<", "/etc/group" or do{
+    print "Cannot open /etc/group: $!";
+    return;
+};
 
 # Read each line of the file and look for the group we want to modify
 while (my $line = <$group_file>) {

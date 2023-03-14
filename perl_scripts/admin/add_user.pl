@@ -1,5 +1,4 @@
 #!/usr/bin/perl
-use User::pwent;
 use Crypt::PasswdMD5;
 use strict;
 use warnings;
