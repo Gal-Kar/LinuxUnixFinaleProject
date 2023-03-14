@@ -104,18 +104,20 @@ foreach my $line (@group_lines) {
     my $groupname = $fields[0];
     my $group_members = $fields[3];
 
-    # Split the list of members into an array
-    my @members = split(/,/, $group_members);
+    if(defined($group_members)){
+        # Split the list of members into an array
+        my @members = split(/,/, $group_members);
 
-    # Remove the user we want to remove from the array
-    @members = grep { $_ ne $name } @members;
+        # Remove the user we want to remove from the array
+        @members = grep { $_ ne $name } @members;
 
-    # Join the remaining members back into a comma-separated list
-    my $new_members = join(",", @members);
+        # Join the remaining members back into a comma-separated list
+        my $new_members = join(",", @members);
 
-    # Replace the old list of members with the new one in the current line
-    $fields[3] = $new_members;
-    $line = join(":", @fields);
+        # Replace the old list of members with the new one in the current line
+        $fields[3] = $new_members;
+        $line = join(":", @fields);
+    }
 }
 
 # Open the group file for writing and write out the modified lines

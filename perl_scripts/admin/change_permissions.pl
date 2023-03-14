@@ -39,3 +39,5 @@ while (my $line = <$group_file>) {
 
 # Close the /etc/group file
 close $group_file;
+
+print "Permission edited successfully";
